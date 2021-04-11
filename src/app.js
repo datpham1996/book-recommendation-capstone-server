@@ -1,4 +1,5 @@
 require('dotenv').config()
+let bodyParser = require("body-parser")
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
@@ -8,6 +9,8 @@ const {
 } = require('./config')
 const errorHandler = require('./middleware/error-handler')
 const pancakeRouter = require('./pancake/pancake-router')
+const authRouter = require("./auth/auth-router");
+const usersRouter = require("./users/users-router");
 
 const app = express()
 
@@ -24,6 +27,13 @@ app.use(helmet())
 app.use(express.static('public'))
 
 app.use('/api/pancakes', pancakeRouter)
+//Load user login router
+app.use("/api/auth", authRouter);
+//Load user registration router
+app.use("/api/users", usersRouter);
+app.get('/', (req, res) => {
+    res.send('Hello, world!')
+})
 app.use(errorHandler)
 
 module.exports = app
