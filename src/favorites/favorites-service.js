@@ -9,8 +9,16 @@ const FavoriteService = {
         return db
             .select('*')
             .from('favorites')
-            .where('favorite.id', favorite_id)
+            .where('id', favorite_id)
             .first()
+    },
+    //relevant
+    getFavoriteByUserId(db, user_id) {
+        return db
+            .select('*')
+            .from('favorites')
+            .where('users_id', user_id)
+            
     },
     //relevant
     insertFavorite(db, newFavorite) {
@@ -27,7 +35,7 @@ const FavoriteService = {
         return db('favorites')
             .update(newFavorite, returning = true)
             .where({
-                id: favorite_id
+                'id': favorite_id
             })
             .returning('*')
             .then(rows => {

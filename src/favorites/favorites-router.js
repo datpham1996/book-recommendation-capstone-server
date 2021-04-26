@@ -177,4 +177,62 @@ favoriteRouter
     })
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+favoriteRouter
+    .route('/user/:user_id')
+    .all((req, res, next) => {
+        if (isNaN(parseInt(req.params.user_id))) {
+            //if there is an error show it
+            return res.status(404).json({
+                error: {
+                    message: `Invalid user id`
+                }
+            })
+        }
+
+        //connect to the service to get the data
+        FavoriteService.getFavoriteByUserId(
+            req.app.get('db'),
+            req.params.user_id
+        )
+            .then(userFavorites => {
+                if (!userFavorites) {
+                    //if there is an error show it
+                    return res.status(404).json({
+                        error: {
+                            message: `Favorite doesn't exist`
+                        }
+                    })
+                }
+                res.userFavorites = userFavorites
+                next()
+            })
+            .catch(next)
+    })
+    .get((req, res, next) => {
+
+        //get each one of the objects from the results and serialize them
+        res.json(res.userFavorites.map(serializeFavorite))
+    })
+    
+
+
 module.exports = favoriteRouter
